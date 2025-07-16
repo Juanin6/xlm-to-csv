@@ -58,7 +58,7 @@ def xml_to_csv(xml_content: bytes) -> BytesIO:
                 for p in personas_naturales:
                     persona_list.append({
                         'persona_juridica.documento': "",
-                        'persona_juridica.numero_documento': ',',
+                        'persona_juridica.numero_documento': '',
                         'persona_juridica.razon_social': "",
                         'documento': p.findtext('documento', ','),
                         'numero_documento': p.findtext('numero_documento', ','),
