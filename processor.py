@@ -7,8 +7,13 @@ def xml_to_csv(xml_content: bytes) -> BytesIO:
     root = tree.getroot()
 
     rows = []
-
-    for mutacion in root.findall('.//mutacion_rectificacion'):
+    
+    if root.tag == 'mutacion_rectificacion':
+        mutaciones = [root]
+    else:
+        mutaciones = root.findall('.//mutacion_rectificacion')
+    
+    for mutacion in mutaciones:
         tipo_tramite = mutacion.findtext('tipo_tramite', '')
         radicado = mutacion.findtext('radicado', '')
         resolucion = mutacion.findtext('resolucion', '')
@@ -17,7 +22,8 @@ def xml_to_csv(xml_content: bytes) -> BytesIO:
 
         for tipo, origen_predio in [
             ('predios_actualizados', 'actualizacion'),
-            ('predios_inscritos', 'inscritos')
+            ('predios_inscritos', 'inscritos'),
+            ('predios_cancelados', 'cancelados')
         ]:
             for predio in mutacion.findall(f'{tipo}/predio'):
                 predio_data = {
@@ -85,6 +91,9 @@ def xml_to_csv(xml_content: bytes) -> BytesIO:
                     for persona in persona_list:
                         row = {**predio_data, **avaluo, **persona}
                         rows.append(row)
+    
+    if(rows == []):
+        rows.append({"mensaje": "No se encontraron datos para exportar."})
 
     # Crear CSV en memoria
     output = StringIO()
