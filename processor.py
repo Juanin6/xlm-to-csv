@@ -86,7 +86,23 @@ def xml_to_csv(xml_content: bytes) -> BytesIO:
                         'primer_apellido': "",
                         'segundo_apellido': "",
                     })
+                # Si no hay avaluos o personas, agregamos un registro vacío para mantener la estructura del CSV
+                if not avaluo_list:
+                    avaluo_list.append({'avaluo': '', 'vigencia': ''})
 
+                if not persona_list:
+                    persona_list.append({
+                        'persona_juridica.documento': '',
+                        'persona_juridica.numero_documento': '',
+                        'persona_juridica.razon_social': '',
+                        'documento': '',
+                        'numero_documento': '',
+                        'primer_nombre': '',
+                        'segundo_nombre': '',
+                        'primer_apellido': '',
+                        'segundo_apellido': '',
+                    })
+                
                 for avaluo in avaluo_list:
                     for persona in persona_list:
                         row = {**predio_data, **avaluo, **persona}
